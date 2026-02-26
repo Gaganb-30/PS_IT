@@ -1,0 +1,126 @@
+/* ===== EQUIPMENT GRID ===== */
+.equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.equipment-card {
+    padding: 36px 28px;
+}
+
+.equipment-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+}
+
+.equipment-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.equipment-desc {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.equipment-features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.equipment-features li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+}
+
+.equipment-features li svg {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* ===== PROCESS ===== */
+.process-section {
+    background: var(--bg-secondary);
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.process-card {
+    text-align: center;
+    position: relative;
+    padding: 32px 20px;
+}
+
+.process-number {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 800;
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0.4;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+
+.process-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.process-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.process-arrow {
+    position: absolute;
+    right: -18px;
+    top: 40px;
+    color: var(--accent-cyan);
+    font-size: 1.5rem;
+    opacity: 0.3;
+}
+
+.process-cta {
+    text-align: center;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .equipment-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .process-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .process-arrow {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .equipment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .process-grid {
+        grid-template-columns: 1fr;
+    }
+}
