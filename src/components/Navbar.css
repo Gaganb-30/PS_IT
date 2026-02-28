@@ -145,48 +145,76 @@
     background: rgba(148, 163, 184, 0.1);
 }
 
-/* Mobile */
+/* Mobile Menu */
 .navbar-mobile {
-    position: absolute;
+    position: fixed;
     top: var(--navbar-height);
     left: 0;
     right: 0;
-    background: rgba(3, 7, 18, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
-    overflow: hidden;
+    bottom: 0;
+    background: rgba(3, 7, 18, 0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border-color);
+    overflow-y: auto;
+    z-index: 999;
+}
+
+[data-theme="light"] .navbar-mobile {
+    background: rgba(250, 251, 255, 0.98);
 }
 
 .navbar-mobile-inner {
     display: flex;
     flex-direction: column;
-    padding: 16px 24px 24px;
+    padding: 24px 24px 32px;
     gap: 4px;
+    min-height: 100%;
 }
 
 .mobile-link {
-    padding: 14px 16px;
-    font-size: 1.05rem;
+    display: block;
+    padding: 16px 20px;
+    font-size: 1.1rem;
     font-weight: 500;
     color: var(--text-secondary);
     border-radius: var(--radius-md);
     transition: all var(--transition-fast);
+    width: 100%;
 }
 
 .mobile-link:hover {
     color: var(--text-primary);
-    background: rgba(148, 163, 184, 0.05);
+    background: rgba(148, 163, 184, 0.08);
 }
 
 .mobile-link-active {
     color: var(--accent-cyan);
-    background: rgba(6, 182, 212, 0.08);
+    background: rgba(6, 182, 212, 0.1);
 }
 
 .mobile-cta {
-    margin-top: 12px;
+    margin-top: 20px;
     text-align: center;
+    width: 100%;
+}
+
+.mobile-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 16px 0;
+}
+
+/* Navbar with menu open gets solid bg */
+.navbar-menu-open {
+    background: rgba(3, 7, 18, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .navbar-menu-open {
+    background: rgba(250, 251, 255, 0.98);
 }
 
 @media (max-width: 900px) {
@@ -200,5 +228,40 @@
 
     .navbar-toggle {
         display: flex;
+    }
+
+    /* Hide desktop theme toggle and CTA on mobile — they live in mobile menu */
+    .navbar-actions .desktop-only {
+        display: none;
+    }
+
+    .navbar-brand {
+        font-size: 1.1rem;
+        gap: 10px;
+    }
+
+    .navbar-logo {
+        width: 36px;
+        height: 36px;
+    }
+
+    .logo-icon {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-brand {
+        font-size: 0.95rem;
+        gap: 8px;
+    }
+
+    .navbar-logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .logo-icon {
+        font-size: 0.75rem;
     }
 }

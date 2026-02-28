@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { HiArrowRight, HiCheckCircle } from 'react-icons/hi'
-import { FaLaptop, FaServer, FaNetworkWired, FaDesktop, FaVideo, FaTools, FaShoppingCart } from 'react-icons/fa'
+import { FaLaptop, FaServer, FaNetworkWired, FaDesktop, FaVideo, FaTools, FaShoppingCart, FaHeadset } from 'react-icons/fa'
 import ScrollReveal from '../components/ScrollReveal'
 import SEO from '../components/SEO'
 import './Services.css'
@@ -15,19 +15,11 @@ const pageTransition = {
 const equipmentCategories = [
     {
         icon: <FaDesktop />,
-        title: 'Desktop Renting',
-        description: 'Flexible desktop rental plans for offices, BPOs, and training centers.',
-        features: ['HP, Dell & Lenovo Desktops', 'Bulk Availability', 'Pre-configured Systems', 'Monthly & Long-term Plans', 'Quick Deployment', 'On-site Setup'],
+        title: 'Desktop & Laptop Rentals',
+        description: 'Flexible desktop and laptop rental plans for offices, BPOs, training centers, and temporary projects.',
+        features: ['HP, Dell & Lenovo Desktops', 'Dell Latitude, HP ProBook & ThinkPad Laptops', 'MacBook Pro & Air', 'Bulk Availability & Quick Deployment', 'Pre-configured Systems', 'Monthly & Long-term Plans'],
         color: '#06b6d4',
         bgImage: 'https://images.unsplash.com/photo-1593062096033-9a26b09da705?w=600&auto=format&fit=crop&q=60'
-    },
-    {
-        icon: <FaLaptop />,
-        title: 'Laptop Renting',
-        description: 'Business-grade laptops for employees, projects, and events with bulk support.',
-        features: ['Dell Latitude & Vostro', 'HP ProBook & EliteBook', 'Lenovo ThinkPad Series', 'MacBook Pro & Air', 'Pre-installed Software', 'Bulk Order Discounts'],
-        color: '#8b5cf6',
-        bgImage: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&auto=format&fit=crop&q=60'
     },
     {
         icon: <FaShoppingCart />,
@@ -60,6 +52,14 @@ const equipmentCategories = [
         features: ['LAN/WAN Setup', 'Routing & Switching', 'Structured Cabling', 'Firewall Configuration', 'WiFi Infrastructure', 'Network Monitoring'],
         color: '#ec4899',
         bgImage: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&auto=format&fit=crop&q=60'
+    },
+    {
+        icon: <FaHeadset />,
+        title: 'Complete BPO Solutions',
+        description: 'End-to-end IT infrastructure setup for BPO operations — desktops, networking, CCTV, and ongoing support.',
+        features: ['Full Office IT Setup', 'Bulk Hardware Deployment', 'Network & Internet Setup', 'CCTV & Security', 'Ongoing Technical Support', 'Scalable Infrastructure'],
+        color: '#8b5cf6',
+        bgImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=60'
     }
 ]
 
