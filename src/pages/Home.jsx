@@ -213,10 +213,10 @@ export default function Home() {
               <span className="hero-trust-label">Trusted by businesses in</span>
               <div className="hero-trust-logos">
                 {[
-                  "BPO Centers",
-                  "Corporate Offices",
+                  "IT & Corporate Offices",
                   "Startups",
                   "Training Institutes",
+                  "BPO Centers",
                   "SMBs",
                 ].map((name) => (
                   <span key={name} className="trust-logo">
@@ -300,11 +300,11 @@ export default function Home() {
           </ScrollReveal>
           <div className="clients-grid">
             {[
-              { icon: <FaBuilding />, label: "BPO Companies" },
               { icon: <FaBriefcase />, label: "Corporate Offices" },
               { icon: <FaRocket />, label: "Startups" },
               { icon: <FaStore />, label: "Small & Medium Businesses" },
               { icon: <FaGraduationCap />, label: "Training Institutes" },
+              { icon: <FaBuilding />, label: "BPO Companies" },
               { icon: <FaProjectDiagram />, label: "Temporary Project Teams" },
             ].map((client, i) => (
               <ScrollReveal key={client.label} delay={i * 0.1}>

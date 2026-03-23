@@ -45,10 +45,7 @@ export default function Navbar() {
             <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''} ${isOpen ? 'navbar-menu-open' : ''}`}>
                 <div className="navbar-inner container-wide">
                     <Link to="/" className="navbar-brand">
-                        <div className="navbar-logo">
-                            <span className="logo-icon">PS</span>
-                        </div>
-                        <span className="brand-text">PS IT<span className="brand-accent"> Solutions</span></span>
+                        <img src="/logo.png" alt="PS IT Solutions" className="navbar-logo-img" />
                     </Link>
 
                     <div className="navbar-links-desktop">

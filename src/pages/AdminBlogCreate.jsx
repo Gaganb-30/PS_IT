@@ -1,7 +1,9 @@
-import { useState } from 'react'
-import { useParams, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { HiPlus, HiCheck, HiX } from 'react-icons/hi'
+import { HiPlus, HiCheck, HiX, HiArrowLeft } from 'react-icons/hi'
+import ReactQuill from 'react-quill-new'
+import 'react-quill-new/dist/quill.snow.css'
 import SEO from '../components/SEO'
 import './AdminBlogCreate.css'
 
@@ -13,30 +15,57 @@ const pageTransition = {
     exit: { opacity: 0, transition: { duration: 0.3 } }
 }
 
-const coverColorOptions = [
-    'linear-gradient(135deg, #06b6d4, #3b82f6)',
-    'linear-gradient(135deg, #8b5cf6, #ec4899)',
-    'linear-gradient(135deg, #10b981, #06b6d4)',
-    'linear-gradient(135deg, #f59e0b, #ef4444)',
-    'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-    'linear-gradient(135deg, #10b981, #84cc16)',
+const quillModules = {
+    toolbar: [
+        [{ 'header': [1, 2, 3, 4, false] }],
+        [{ 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        [{ 'align': [] }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ],
+    clipboard: {
+        matchVisual: false
+    }
+}
+
+const quillFormats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike',
+    'color', 'background',
+    'script',
+    'blockquote', 'code-block',
+    'list', 'indent', 'direction', 'align',
+    'link', 'image', 'video'
 ]
 
 export default function AdminBlogCreate() {
-    const { secretKey } = useParams()
+    const navigate = useNavigate()
+    const token = localStorage.getItem('adminToken')
+
+    useEffect(() => {
+        if (!token) {
+            navigate('/admin/controls/login', { replace: true })
+        }
+    }, [])
+
     const [formData, setFormData] = useState({
         title: '',
         slug: '',
-        excerpt: '',
         category: '',
         author: '',
-        authorRole: '',
-        readTime: '5 min read',
         tags: '',
-        coverColor: coverColorOptions[0],
         coverImage: '',
-        content: '',
+        published: true,
     })
+    const [content, setContent] = useState('')
     const [status, setStatus] = useState({ type: '', message: '' })
     const [loading, setLoading] = useState(false)
 
@@ -51,19 +80,26 @@ export default function AdminBlogCreate() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!content || content === '<p><br></p>') {
+            setStatus({ type: 'error', message: 'Content is required!' })
+            return
+        }
         setLoading(true)
         setStatus({ type: '', message: '' })
 
         try {
             const blogPayload = {
                 ...formData,
+                content,
                 tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
-                secretKey,
             }
 
             const res = await fetch(`${API_URL}/api/blogs`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
                 body: JSON.stringify(blogPayload),
             })
 
@@ -72,11 +108,17 @@ export default function AdminBlogCreate() {
             if (res.ok) {
                 setStatus({ type: 'success', message: 'Blog post created successfully!' })
                 setFormData({
-                    title: '', slug: '', excerpt: '', category: '', author: '',
-                    authorRole: '', readTime: '5 min read', tags: '',
-                    coverColor: coverColorOptions[0], coverImage: '', content: '',
+                    title: '', slug: '', category: '', author: '',
+                    tags: '', coverImage: '', published: true,
                 })
+                setContent('')
+                window.scrollTo({ top: 0, behavior: 'smooth' })
             } else {
+                if (res.status === 401) {
+                    localStorage.removeItem('adminToken')
+                    navigate('/admin/controls/login', { replace: true })
+                    return
+                }
                 setStatus({ type: 'error', message: data.error || 'Failed to create blog post.' })
             }
         } catch (err) {
@@ -86,16 +128,26 @@ export default function AdminBlogCreate() {
         }
     }
 
+    if (!token) return null
+
     return (
         <motion.div className="page-transition admin-page" {...pageTransition}>
-            <SEO title="Admin — Create Blog Post" description="Admin panel to create blog posts" />
+            <SEO title="Create Blog Post — Admin" description="Admin panel to create blog posts" />
 
             <section className="admin-hero">
                 <div className="container">
-                    <div className="admin-header">
-                        <HiPlus className="admin-icon" />
-                        <h1>Create <span className="gradient-text">Blog Post</span></h1>
-                        <p>Admin Panel — Only accessible with a valid secret key</p>
+                    <div className="admin-create-header">
+                        <button
+                            onClick={() => navigate('/admin/controls')}
+                            className="btn btn-ghost admin-back-btn"
+                        >
+                            <HiArrowLeft /> <span>Back to Dashboard</span>
+                        </button>
+                        <div className="admin-header">
+                            <HiPlus className="admin-icon" />
+                            <h1>Create <span className="gradient-text">Blog Post</span></h1>
+                            <p>Use the rich text editor to write your blog content</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -103,10 +155,14 @@ export default function AdminBlogCreate() {
             <section className="section admin-section">
                 <div className="container">
                     {status.message && (
-                        <div className={`admin-status ${status.type}`}>
+                        <motion.div
+                            className={`admin-status ${status.type}`}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                        >
                             {status.type === 'success' ? <HiCheck /> : <HiX />}
                             {status.message}
-                        </div>
+                        </motion.div>
                     )}
 
                     <form onSubmit={handleSubmit} className="admin-form card">
@@ -127,14 +183,6 @@ export default function AdminBlogCreate() {
                             </div>
                         </div>
 
-                        <div className="admin-form-group">
-                            <label>Excerpt *</label>
-                            <textarea
-                                name="excerpt" value={formData.excerpt} rows="3"
-                                onChange={handleChange} placeholder="Brief description of the post" required
-                            />
-                        </div>
-
                         <div className="admin-form-row">
                             <div className="admin-form-group">
                                 <label>Category *</label>
@@ -150,23 +198,9 @@ export default function AdminBlogCreate() {
                                     onChange={handleChange} placeholder="Author name" required
                                 />
                             </div>
-                            <div className="admin-form-group">
-                                <label>Author Role</label>
-                                <input
-                                    type="text" name="authorRole" value={formData.authorRole}
-                                    onChange={handleChange} placeholder="e.g. Technical Director"
-                                />
-                            </div>
                         </div>
 
                         <div className="admin-form-row">
-                            <div className="admin-form-group">
-                                <label>Read Time</label>
-                                <input
-                                    type="text" name="readTime" value={formData.readTime}
-                                    onChange={handleChange} placeholder="5 min read"
-                                />
-                            </div>
                             <div className="admin-form-group">
                                 <label>Tags (comma-separated)</label>
                                 <input
@@ -174,48 +208,41 @@ export default function AdminBlogCreate() {
                                     onChange={handleChange} placeholder="tech, rental, networking"
                                 />
                             </div>
-                        </div>
-
-                        <div className="admin-form-group">
-                            <label>Cover Image URL (optional)</label>
-                            <input
-                                type="url" name="coverImage" value={formData.coverImage}
-                                onChange={handleChange} placeholder="https://example.com/image.jpg"
-                            />
-                        </div>
-
-                        <div className="admin-form-group">
-                            <label>Cover Gradient</label>
-                            <div className="color-options">
-                                {coverColorOptions.map(color => (
-                                    <button
-                                        key={color}
-                                        type="button"
-                                        className={`color-swatch ${formData.coverColor === color ? 'color-swatch-active' : ''}`}
-                                        style={{ background: color }}
-                                        onClick={() => setFormData(prev => ({ ...prev, coverColor: color }))}
-                                    />
-                                ))}
+                            <div className="admin-form-group">
+                                <label>Cover Image URL</label>
+                                <input
+                                    type="url" name="coverImage" value={formData.coverImage}
+                                    onChange={handleChange} placeholder="https://example.com/image.jpg"
+                                />
                             </div>
                         </div>
 
                         <div className="admin-form-group">
-                            <label>Content (HTML) *</label>
-                            <textarea
-                                name="content" value={formData.content} rows="15"
-                                onChange={handleChange}
-                                placeholder="<h2>Section Title</h2><p>Your content here...</p>"
-                                required
-                            />
+                            <label className="admin-publish-toggle">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.published}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, published: e.target.checked }))}
+                                />
+                                <span className="toggle-slider" />
+                                <span>{formData.published ? 'Published' : 'Draft'}</span>
+                            </label>
                         </div>
 
-                        {/* Preview */}
-                        {formData.content && (
-                            <div className="admin-preview">
-                                <h4>Content Preview</h4>
-                                <div className="blog-content" dangerouslySetInnerHTML={{ __html: formData.content }} />
+                        {/* Rich Text Editor */}
+                        <div className="admin-form-group admin-editor-group">
+                            <label>Content *</label>
+                            <div className="admin-quill-wrapper">
+                                <ReactQuill
+                                    theme="snow"
+                                    value={content}
+                                    onChange={setContent}
+                                    modules={quillModules}
+                                    formats={quillFormats}
+                                    placeholder="Start writing your blog post..."
+                                />
                             </div>
-                        )}
+                        </div>
 
                         <button type="submit" className="btn btn-primary btn-lg admin-submit" disabled={loading}>
                             <span>{loading ? 'Publishing...' : 'Publish Blog Post'}</span>

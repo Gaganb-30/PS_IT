@@ -48,10 +48,7 @@
     border-radius: 50%;
     opacity: 0;
     animation: float-particle linear infinite;
-    box-shadow:
-        0 0 7px 2px rgba(36, 244, 255, 0.677),
-        0 0 15px 5px rgba(36, 244, 255, 0.5),
-        0 0 30px 10px rgba(36, 244, 255, 0.3);
+
 }
 
 @keyframes float-particle {

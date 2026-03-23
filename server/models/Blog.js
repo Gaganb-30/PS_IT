@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const blogSchema = new mongoose.Schema({
     slug: { type: String, required: true, unique: true },
     title: { type: String, required: true },
-    excerpt: { type: String, required: true },
+    excerpt: { type: String, default: '' },
     category: { type: String, required: true },
     author: { type: String, required: true },
     authorRole: { type: String, default: '' },
